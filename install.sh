@@ -31,7 +31,7 @@ else
 fi
 if [ -r $DIR/displaycameras.service ]; then
 	echo "Copying the systemd init file and setting permissions."
-	cp -f $DIR/displaycameras.service /etc/systemd/system/ && chown root:root /etc/systemd/system/displaycameras.service && chmod 0755 /etc/systemd/system/displaycameras.service
+	cp -f $DIR/displaycameras.service /etc/systemd/system/ && chown root:root /etc/systemd/system/displaycameras.service && chmod 0644 /etc/systemd/system/displaycameras.service
 else
 	echo "The displaycameras.service file is missing or unreadable. This is a critical file."
 	echo "Verify package contents."
