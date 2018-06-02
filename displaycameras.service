@@ -1,0 +1,28 @@
+[Unit]
+Documentation=man:systemd-sysv-generator(8)
+Description=Displays camera feeds for monitoring
+Before=multi-user.target
+Before=multi-user.target
+Before=multi-user.target
+Before=graphical.target
+After=network-online.target
+After=dbus.service
+After=cron.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+Restart=no
+TimeoutSec=5min
+IgnoreSIGPIPE=no
+LimitNPROC=1
+KillMode=control-group
+GuessMainPID=no
+RemainAfterExit=yes
+SuccessExitStatus=5 6
+ExecStart=/usr/bin/displaycameras start
+ExecStop=/usr/bin/displaycameras stop
+ExecReload=/usr/bin/displaycameras restart
+
+[Install]
+WantedBy=multi-user.target

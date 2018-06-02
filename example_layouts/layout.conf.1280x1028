@@ -1,0 +1,73 @@
+# This is the camera feed/windows layout configuration file for the
+# displaycameras service.  It ONLY configures the layout and feeds for
+# the cameras; the rest of the configuration is in displaycameras.conf.
+# See the comments in that file for notes on configuring the below.
+
+# This example defines nine 640x343 windows, three of which are off-screen to the right,
+# on which the service displays six camera feeds (it uses only the six on-screen windows)
+# on a 1280x1028 monitor.  If this suites your needs, modify only the camera names to taste
+# and feed URLs to what your cameras or NVR provides.
+
+# Window names
+
+# 2x3 screen (for 1280x1028 screens)
+windows=(upper_left upper_right mid_left mid_right lower_left lower_right off_screen off_screen2 off_screen3)
+# Make sure to account for each window above in the list below.
+
+# Windows positions
+
+window_positions=(
+#First Row
+#upper_left
+# 640x343
+"0 0 639 342" \
+#upper_right
+"640 0 1279 342" \
+
+#Second Row
+#mid_left
+"0 343 639 685" \
+#mid_right
+"640 343 1279 685" \
+
+#Third Row
+#lower_left
+"0 686 639 1028" \
+#lower_right
+"640 686  1279 1028" \
+
+#off-screen
+# 640x343 window just off-screen to the right
+"1280 0 1919 342" \
+# 640x343 window just below the other
+"1280 360 1919 685" \
+"1920 0 2559 342" \
+)
+
+# Camera Names
+
+camera_names=(NE SE South SW West Vestibule)
+# Make sure to account for each camera above in the list of feeds below.
+
+# Camera Feeds
+
+camera_feeds=(
+# Low-Res
+# "rtsp://xxx.xxx.xxx.xxx/yyyyy_2" \
+#NE
+"<Camera stream URL>" \
+#SE
+"<Camera stream URL>" \
+#South
+"<Camera stream URL>" \
+#SW
+"<Camera stream URL>" \
+#West
+"<Camera stream URL>" \
+#Vestibule
+"<Camera stream URL>" \
+)
+
+# Are we rotating cameras through the window matrix?  Set this explicitly to
+# "false" if not desired in this display layout.
+rotate="false"

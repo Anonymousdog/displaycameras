@@ -1,0 +1,6 @@
+# This job repairs broken camera feeds in the displaycamera service
+
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+* * * * * root /usr/bin/displaycameras repair

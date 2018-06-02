@@ -1,0 +1,95 @@
+# This is the camera feed/windows layout configuration file for the
+# displaycameras service.  It ONLY configures the layout and feeds for
+# the cameras; the rest of the configuration is in displaycameras.conf.
+# See the comments in that file for notes on configuring the below.
+
+# Window names
+
+windows=(upper_left upper_middle upper_right center_left center_middle center_right lower_left lower_middle lower_right off_screen off_screen2 off_screen3 off_screen4 off_screen5)
+# Make sure to account for each window above in the list below.
+
+# Windows positions
+
+window_positions=(
+#First Row
+#upper_left
+# 480x300
+"0 0 479 299" \
+#upper_middle
+"480 0 959 299" \
+#upper_right
+"960 0 1439 299" \
+
+#Second Row
+#center_left
+"0 300 479 599" \
+#center_middle
+"480 300 959 599" \
+#center_right
+"960 300 1439 599" \
+
+#Third Row
+#lower_left
+"0 600 479 899" \
+#lower_middle
+"640 600 959 899" \
+#lower_right
+"1280 600 1439 899" \
+
+
+#off-screen
+"1440 0 1919 299" \
+"1920 0 2399 299" \
+"2400 0 2879 299" \
+"1400 300 1919 599" \
+"1920 300 2399 599" \
+"1920 300 2879 599" \
+)
+
+# Camera Names
+
+#camera_names=(NE SE South SW West Vestibule SW2 West2 Vest2 NE2 SE2)
+#camera_names=(NE SE South SW West Vestibule SW2 West2 Vest2 NE2 SE2 South2 SW3 West3 Vest3 NE3)
+camera_names=(NE SE South SW West Vestibule 1stFront 1stBack 2ndHall 2ndRecep 2ndStair 3rdHall 3rdRecep 3rdStair)
+# Make sure to account for each camera above in the list of feeds below.
+
+# Camera Feeds
+
+camera_feeds=( \
+# Mid-Res
+#NE
+"rtsp://xxx.xxx.xxx.xxx:7447/yyyyy_2" \
+#SE
+"<Camera stream URL>" \
+#South
+"<Camera stream URL>" \
+#SW
+"<Camera stream URL>" \
+#West
+"<Camera stream URL>" \
+#Vestibule
+"<Camera stream URL>" \
+#1stBack
+"<Camera stream URL>" \
+#1stFront
+"<Camera stream URL>" \
+#2ndHall
+"<Camera stream URL>" \
+#2ndRecep
+"<Camera stream URL>" \
+#2ndStair
+"<Camera stream URL>" \
+#3rdHall
+"<Camera stream URL>" \
+#3rdRecep
+"<Camera stream URL>" \
+#3rdStair
+"<Camera stream URL>" \
+#Vest3
+"<Camera stream URL>" \
+#NE3
+"<Camera stream URL>" \
+)
+
+# Are we rotating cameras through the window matrix? (default false if not set here)
+rotate="true"

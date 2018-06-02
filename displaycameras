@@ -1,0 +1,327 @@
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides: omxplayer
+# Required-Start: $network $local_fs dbus cron
+# Required-Stop:
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: Displays camera feeds for monitoring
+# Description:
+### END INIT INFO
+
+#version:0.8.3
+
+# Exit if not root
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root"
+   exit 0
+fi
+
+# Exit if omxplayer_dbus is not executable and in the PATH
+if [ ! `which omxplayer_dbuscontrol` ]; then
+	echo "omxplayer_dbuscontrol must be executable and in the PATH env variable."
+	exit 1
+fi
+
+# Exit if omxplayer is not installed
+if [ ! `which omxplayer` ]; then
+	echo "Please, install omxplayer."
+	exit 1
+fi
+
+# Exit if config file is not present and readable
+if [ -r /etc/displaycameras/displaycameras.conf ]; then
+	. /etc/displaycameras/displaycameras.conf;
+else
+	echo "/etc/displaycameras/displaycameras.conf does not exist or is not readable."
+	exit 1
+fi
+
+# Exit if default layout config file is not present and readable
+if [ ! -r /etc/displaycameras/layout.conf.default ]; then
+	echo "/etc/displaycameras/layout.conf.default does not exist or is not readable."
+	exit 1
+fi
+
+# If enabled, autodetect display mode, check for layout config file for that
+# mode, and load that file if present.
+if [ "$displaydetect" = "true" ]; then
+	if [ "`grep disable_overscan /boot/config.txt | egrep -v ^#`" = "disable_overscan=1" ]; then
+		mode="`fbset -s | egrep ^mode | awk -v N=2 '{print $2}'`"
+		# remove quotes surrounding $mode
+		mode=${mode%\"}
+		mode=${mode#\"}
+		if [ -r /etc/displaycameras/layout.conf.$mode ]; then
+			. /etc/displaycameras/layout.conf.$mode
+			displaydetectactive=true
+		else
+			. /etc/displaycameras/layout.conf.default
+			echo "No layout configuration file found for $mode resolution."
+		fi
+	else
+		. /etc/displaycameras/layout.conf.default
+		echo "Display resolution autodetection will not work properly with overscan enabled."
+		echo "Ensure disable_overscan=1 is in /boot/config.txt."
+	fi
+else
+	. /etc/displaycameras/layout.conf.default
+fi
+
+# Ensure there is an omxplayer timeout value
+if [ "$omx_timeout" = "" ]; then
+	omx_timeout=30
+fi
+
+# Set a variables for PID file and Display Sequence file
+PIDFILE=/var/run/displaycameras.pid
+DISPLAY_SEQUENCE_FILE=/tmp/displaycameras.seq
+
+# How many cameras do we have?
+cameras="${#camera_names[@]}"
+# Set the max camera rotation sequence as one less than the number of cameras
+# (since it starts at zero).
+max_seq=$((cameras-1))
+
+# Figure out the current display sequence or set it to zero if it doesn't exist.
+if [ ! -f $DISPLAY_SEQUENCE_FILE ]; then
+	echo 0 > $DISPLAY_SEQUENCE_FILE
+fi
+declare -i DISPLAY_SEQUENCE
+DISPLAY_SEQUENCE=`cat $DISPLAY_SEQUENCE_FILE`
+
+#Functions
+
+case "$1" in
+# Start displaying camera feeds
+start)
+if [ -f $PIDFILE ]; then
+	echo "PID file exists!  Stop or Restart this service instead."
+exit 1
+fi
+if [ "$blank" = "true" ]; then
+	echo "Blanking screen"
+	fbi --noverbose -T 2 /usr/bin/black.png >/dev/null 2>&1 &
+fi
+if [ "$displaydetectactive" = "true" ]; then
+	echo "Display detection is active for $mode resolution."
+fi
+startupfailure=false
+feedfailure=false
+for i in ${!camera_names[*]}
+do
+	startupretry=0
+	feedretry=0
+	x=$((i+$DISPLAY_SEQUENCE))
+	if [ "$x" -ge "${#camera_names[@]}" ]; then x=$((x-${#camera_names[@]}))
+	fi
+	player="omxplayer --no-keys --no-osd --avdict rtsp_transport:tcp --win \"${window_positions[$x]}\" \"${camera_feeds[$i]}\" --live -n -1 --timeout "$omx_timeout" --dbus_name "org.mpris.MediaPlayer2.omxplayer.${camera_names[$i]}" >/dev/null &"
+	echo "Starting omxplayer for ${camera_names[$i]}"
+	eval $player
+	sleep $startsleep
+	while [ "`omxplayer_dbuscontrol ${camera_names[$i]} getplaystatus`" != "Playing" ]
+	do
+		sleep 1
+		echo "Waiting for ${camera_names[$i]} omxplayer startup $startupretry"
+		if [ "$startupretry" -eq "$retry" ]; then
+			break
+		fi
+		startupretry=$((startupretry+1))
+	done
+	if [ "`omxplayer_dbuscontrol ${camera_names[$i]} getplaystatus`" = "Playing" ]
+	then
+		sleep $feedsleep
+		while [ "`omxplayer_dbuscontrol ${camera_names[$i]} getposition`" = "0s" ]
+		do
+			sleep 1
+			echo "Waiting for ${camera_names[$i]} playback $feedretry"
+			if [ "$feedretry" -eq "$retry" ]; then
+				omxplayer_dbuscontrol $i quit
+				feedfailure=true
+				break
+			fi
+		feedretry=$((feedretry+1))
+		done
+	else
+		startupfailure=true
+	fi
+	if [ "`omxplayer_dbuscontrol ${camera_names[$i]} getplaystatus`" = "Playing" ] && [ "`omxplayer_dbuscontrol ${camera_names[$i]} getposition`" != "0s" ]; then
+		echo "${camera_names[$i]} started"
+	else
+		echo "${camera_names[$i]} failed playback"
+	fi
+done
+touch $PIDFILE
+# One go at a repair job if not all displays start correctly
+if [ "$startupfailure" = "true" ] || [ "$feedfailure" = "true" ]; then
+	echo "Running a repair on failed feeds."
+	$0 repair startup
+fi
+echo "Camera Display Started"
+echo "For complete status info, run"
+echo "/usr/bin/displaycameras status."
+if [ "$rotate" = "true" ]; then
+	if [ "$rotatedelay" = "" ]; then
+		rotatedelay=5
+	fi
+	echo "Starting camera rotation"
+	rotatedisplays $rotatedelay &
+fi
+;;
+
+# Stop displaying camera feeds
+stop)
+rm -f $PIDFILE
+rm -f $DISPLAY_SEQUENCE_FILE
+if [ "$rotate" = "true" ]; then
+	pkill rotatedisplays
+fi
+for i in ${camera_names[@]}
+do
+	omxplayer_dbuscontrol $i quit
+done
+sleep 2
+if [ "$blank" = "true" ]; then
+	pkill fbi
+fi
+killall omxplayer.bin > /dev/null 2>&1
+echo "Camera Display Stopped"
+exit 0
+;;
+
+# Restart
+restart)
+$0 stop
+sleep 1
+$0 start
+;;
+
+# Restart any camera feeds that don't claim to be playing or restart the service
+# if too many omxplayer.bin instances are active.
+repair)
+# Do nothing unless the service PID file exists
+if [ ! -f $PIDFILE ]; then exit 0; fi
+# Stop and start the service if we have too many omxplayers
+if [ `pgrep -c omxplayer.bin` -gt $cameras ]
+then
+	$0 restart
+fi
+# The actual repair part
+for i in ${!camera_names[*]}
+do
+	if [ "`omxplayer_dbuscontrol ${camera_names[$i]} getplaystatus`" != "Playing" -o "`omxplayer_dbuscontrol ${camera_names[$i]} getposition`" = "0s" ]
+	then
+		rm -f $PIDFILE
+		pkill rotatedisplays
+		omxplayer_dbuscontrol ${camera_names[$i]} quit
+		x=$((i+$DISPLAY_SEQUENCE))
+		if [ "$x" -ge "${#camera_names[@]}" ]; then x=$((x-${#camera_names[@]}))
+		fi
+		player="omxplayer --no-keys --no-osd --avdict rtsp_transport:tcp --win \"${window_positions[$x]}\" \"${camera_feeds[$i]}\" --live -n -1 --timeout "$omx_timeout" --dbus_name "org.mpris.MediaPlayer2.omxplayer.${camera_names[$i]}" >/dev/null &"
+		echo "Starting omxplayer for ${camera_names[$i]}"
+		eval $player
+		sleep $startsleep
+		startupretry=0
+		feedretry=0
+		while [ "`omxplayer_dbuscontrol ${camera_names[$i]} getplaystatus`" != "Playing" ]
+		do
+			sleep 1
+			echo "Waiting for ${camera_names[$i]} omxplayer startup $startupretry"
+			if [ "$startupretry" -eq "$retry" ]; then
+				break
+			fi
+			startupretry=$((startupretry+1))
+		done
+		if [ "`omxplayer_dbuscontrol ${camera_names[$i]} getplaystatus`" = "Playing" ]
+		then
+			sleep $feedsleep
+			while [ "`omxplayer_dbuscontrol ${camera_names[$i]} getposition`" = "0s" ]
+			do
+				sleep 1
+				echo "Waiting for ${camera_names[$i]} playback $feedretry"
+				if [ "$feedretry" -eq "$retry" ]; then
+					omxplayer_dbuscontrol $i quit
+					feedfailure=true
+					break
+				fi
+				feedretry=$((feedretry+1))
+			done
+		else
+			startupfailure=true
+		fi
+		if [ "`omxplayer_dbuscontrol ${camera_names[$i]} getplaystatus`" = "Playing" ] && [ "`omxplayer_dbuscontrol ${camera_names[$i]} getposition`" != "0s" ]; then
+			echo "${camera_names[$i]} started"
+		else
+			echo "${camera_names[$i]} failed playback"
+		fi
+		touch $PIDFILE
+		if [ "$rotate" = "true" ]; then
+			if [ "$rotatedelay" = "" ]; then
+				rotatedelay=5
+			fi
+			if [ "$2" != "startup" ]; then
+				echo "Restarting camera rotation"
+				rotatedisplays $rotatedelay &
+			fi
+		fi
+	fi
+done
+;;
+
+rotate)
+# Do nothing unless the service PID file exists
+if [ ! -f $PIDFILE ]; then exit 0; fi
+DISPLAY_SEQUENCE=$((DISPLAY_SEQUENCE-1))
+if [ "$DISPLAY_SEQUENCE" -lt "0" ]; then
+        DISPLAY_SEQUENCE="$max_seq"
+fi
+for i in ${!camera_names[*]}
+do
+        y=$((i-DISPLAY_SEQUENCE-1))
+        if [ "$y" -lt "0" ]; then y=$((y+"${#camera_names[@]}"))
+        fi
+        if [ "$y" -ge "${#camera_names[@]}" ]; then y=$((y-"${#camera_names[@]}"
+))
+        fi
+        x=$((y+$DISPLAY_SEQUENCE))
+        if [ "$x" -ge "${#camera_names[@]}" ]; then x=$((x-"${#camera_names[@]}"
+))
+        fi
+        eval omxplayer_dbuscontrol "${camera_names[$y]}" setvideopos \"${window_positions[$x]}\"
+done
+echo $DISPLAY_SEQUENCE > $DISPLAY_SEQUENCE_FILE
+;;
+
+rotaterev)
+if [ ! -f $PIDFILE ]; then exit 0; fi
+DISPLAY_SEQUENCE=$((DISPLAY_SEQUENCE+1))
+if [ "$DISPLAY_SEQUENCE" -ge "${#camera_names[@]}" ]; then
+        DISPLAY_SEQUENCE=0
+fi
+for i in ${!camera_names[*]}
+do
+        y=$((i-DISPLAY_SEQUENCE+1))
+        if [ "$y" -lt "0" ]; then y=$((y+"${#camera_names[@]}"))
+        fi
+        if [ "$y" -ge "${#camera_names[@]}" ]; then y=$((y-"${#camera_names[@]}"))
+        fi
+        x=$((y+$DISPLAY_SEQUENCE))
+        if [ "$x" -ge "${#camera_names[@]}" ]; then x=$((x-"${#camera_names[@]}"))
+        fi
+        eval omxplayer_dbuscontrol "${camera_names[$y]}" setvideopos \"${window_positions[$x]}\"
+done
+echo $DISPLAY_SEQUENCE > $DISPLAY_SEQUENCE_FILE
+;;
+
+positions)
+for i in "${camera_names[@]}"
+do
+	position="`omxplayer_dbuscontrol $i getposition`"
+	echo "$position $i"
+done
+;;
+
+*)
+echo "Usage: /usr/bin/displaycameras {start|stop|restart|repair|status|positions|echo|rotate|rotaterev}"
+exit 1
+;;
+esac

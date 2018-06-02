@@ -1,0 +1,86 @@
+#!/bin/bash
+
+# Based on dbus.sh from the https://github.com/anselanza/omx-layers project
+#set -x
+
+# This script is specifically modified to support multiple omxplayer instances
+# registered at custom dbus addresses (for use with RPis and Ubiquity camera
+# systems. Since these instances run as background processes as root and the
+# RPi is presumed to be single use (with no other omxplayer instances running,
+# it is protected from being run by regular user.
+# If non-root operation is desired, comment out the next four lines.
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root" 
+   exit 1
+fi
+
+OMXPLAYER_DBUS_ADDR="/tmp/omxplayerdbus.${USER:-root}"
+OMXPLAYER_DBUS_PID="/tmp/omxplayerdbus.${USER:-root}.pid"
+export DBUS_SESSION_BUS_ADDRESS=`cat $OMXPLAYER_DBUS_ADDR`
+export DBUS_SESSION_BUS_PID=`cat $OMXPLAYER_DBUS_PID`
+
+[ -z "$DBUS_SESSION_BUS_ADDRESS" ] && { echo "Must have DBUS_SESSION_BUS_ADDRESS" >&2; exit 1; }
+
+case $2 in
+getplaystatus)
+  playstatus=`dbus-send --print-reply=literal --session --reply-timeout=500 --dest=org.mpris.MediaPlayer2.omxplayer.$1 /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.PlaybackStatus 2>/dev/null`
+  [ $? -ne 0 ] && exit 1
+  playstatus="$(sed 's/^ *//;s/ *$//;' <<< "$playstatus")"
+  echo $playstatus
+  ;;
+status)
+  playstatus=`dbus-send --print-reply=literal --session --reply-timeout=500 --dest=org.mpris.MediaPlayer2.omxplayer.$1 /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.PlaybackStatus 2>/dev/null`
+  [ $? -ne 0 ] && exit 1
+  playstatus="$(sed 's/^ *//;s/ *$//;' <<< "$playstatus")"
+  source=$(dbus-send --print-reply=literal --session --reply-timeout=500 --dest=org.mpris.MediaPlayer2.omxplayer.$1 /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.GetSource 2>/dev/null)
+  [ $? -ne 0 ] && exit 1
+  source="$(sed 's/^ *//;s/ *$//;' <<< "$source")"
+  position=`dbus-send --print-reply=literal --session --reply-timeout=500 --dest=org.mpris.MediaPlayer2.omxplayer.$1 /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Position 2>/dev/null`
+  [ $? -ne 0 ] && exit 1
+  position="$(awk '{print $2}' <<< "$position")"
+  position="$(($position/1000000))sec"
+  echo "$playstatus $source"
+  echo "at $position"
+;;
+getduration)
+  duration=`dbus-send --print-reply=literal --session --reply-timeout=500 --dest=org.mpris.MediaPlayer2.omxplayer.$1 /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Duration 2>/dev/null`
+  [ $? -ne 0 ] && exit 1
+  duration="$(awk '{print $2}' <<< "$duration")"
+  duration="$(($duration/1000000)) sec"
+  echo $duration
+  ;;
+getposition)
+  position=`dbus-send --print-reply=literal --session --reply-timeout=500 --dest=org.mpris.MediaPlayer2.omxplayer.$1 /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Position 2>/dev/null`
+  [ $? -ne 0 ] && exit 1
+  position="$(awk '{print $2}' <<< "$position")"
+  position="$(($position/1000000))s"
+  echo $position
+  ;;
+setvideopos)
+        dbus-send --print-reply=literal --session --dest=org.mpris.MediaPlayer2.omxplayer.$1 /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.VideoPos objpath:/not/used string:"$3" >/dev/null
+        ;;
+setalpha)
+        dbus-send --print-reply=literal --session --dest=org.mpris.MediaPlayer2.omxplayer.$1 /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.SetAlpha objpath:/not/used int64:"$3" >/dev/null
+        ;;
+setvideocroppos)
+        dbus-send --print-reply=literal --session --dest=org.mpris.MediaPlayer2.omxplayer.$1 /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.SetVideoCropPos objpath:/not/used string:"$3 $4 $5 $6" >/dev/null
+        ;;
+getsource)
+        source=$(dbus-send --print-reply=literal --session --reply-timeout=500 --dest=org.mpris.MediaPlayer2.omxplayer.$1 /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.GetSource 2>/dev/null)
+        [ $? -ne 0 ] && exit 1
+        echo "$source" | sed 's/^ *//'
+        ;;
+stop)
+  dbus-send --print-reply=literal --session --dest=org.mpris.MediaPlayer2.omxplayer.$1 /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Stop >/dev/null
+  ;;
+pause)
+  dbus-send --print-reply=literal --session --dest=org.mpris.MediaPlayer2.omxplayer.$1 /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Pause >/dev/null
+  ;;
+quit)
+  dbus-send --print-reply=literal --session --dest=org.mpris.MediaPlayer2.omxplayer.$1 /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Quit 2>/dev/null
+  ;;
+*)
+	echo "usage: $0 screen_name stop|pause|quit|status|getplaystatus|getsource|getduration|getposition" >&2
+	exit 1
+	;;
+esac

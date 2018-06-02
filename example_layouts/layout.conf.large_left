@@ -1,0 +1,86 @@
+# This is the camera feed/windows layout configuration file for the
+# displaycameras service.  It ONLY configures the layout and feeds for
+# the cameras; the rest of the configuration is in displaycameras.conf.
+# See the comments in that file for notes on configuring the below.
+
+# This is a layout file intended to emulate the layout for six cameras
+# in the Unifi system (with one large, mid-res feed in the upper left
+# and smaller, low-res feeds arrayed around the right and bottom) on a
+# 1080p monitor.
+
+# You might use this as a layout.conf.defaultlayout file and remove
+# the /etc/layout.conf.1920x1080 file if one exists (or enable display
+# resolution autodetection and make this file your 1920x1080 layout config file).
+# It will never match autodetected display resolution and applied automatically
+# with the "large_left" file name suffix.
+
+# Window names
+
+# Large Upper Left with two to the right and three below (like the UBNT layout)
+windows=(large_left upper_right mid_right lower_left lower_center lower_right off_screen off_screen2 off_screen3)
+# Make sure to account for each window above in the list below.
+
+# Windows positions
+
+window_positions=(
+#First Row
+#large_left 1280x720
+"0 0 1279 719" \
+#upper_right
+# 640x360
+"1280 0 1919 359" \
+
+#Second Row (missing all but the far right window because large_left is double size
+#mid_right
+"1280 360 1919 719" \
+
+#Third Row (all the way across the bottom)
+#lower_left
+# 640x360
+"0 720 639 1079" \
+#lower_center
+# 640x360
+"640 720  1279 1079" \
+#lower_right
+# 640x360
+"1280 720  1919 1079" \
+
+#off-screen
+# 640x360 window just off-screen to the right
+"1920 0 2559 359" \
+# 640x360 window just below the other
+"1920 360 2559 719" \
+# 640x360 window just below the other two
+"1920 720 2559 1079")
+)
+
+# Camera Names
+
+camera_names=(SE NE South West Vestibule SW)
+# Make sure to account for each camera above in the list of feeds below.
+
+# Camera Feeds
+
+camera_feeds=( \
+# Mid-Res
+# "rtsp://xxx.xxx.xxx.xxx/yyyyy_1" \
+#SE
+"<Camera stream URL>" \
+#Low-Res
+# "rtsp://xxx.xxx.xxx.xxx/yyyyy_2" \
+#NE
+"<Camera stream URL>" \
+#South
+"<Camera stream URL>" \
+#West
+"<Camera stream URL>" \
+#Vestibule
+"<Camera stream URL>" \
+#SW
+"<Camera stream URL>" \
+)
+
+# Are we rotating cameras through the window matrix? (default false if not set here)
+# You're REALLY not going to want to rotate these as the RPi will have to do
+# significant downscaling on the Hi-Res feed to display it in the smaller windows.
+#rotate="true"

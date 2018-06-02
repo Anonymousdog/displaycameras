@@ -1,0 +1,197 @@
+#### Layout Examples ####
+
+### Create the Layout ###
+
+# Figure out the resolution of your target monitor (i.e., HD monitors are 1920x1080).
+# If you have the monitor connected to an RPi with Raspbian on it, you can run
+# 'fbset -s' to find out the mode of the monitor.
+# Take the total number of camera feeds you want to display on that monitor and imagine
+# them positioned in a matrix (that may extend off-screen if you have more cameras than
+# are conveniently displayed in a 2x2 or 3x3 grid.  The size of those grid windows will
+# be the monitor's mode dimensions divided by the number of cells in the x and y directions.
+
+# For instance, you have six camera feeds and a 1080p monitor.  That's more displays than
+# fits nicely on a 2x2 grid but quite a few less than the nine or more you might put on a
+# 3x3 grid.  So, you choose to display the six feeds on six 1/2-HD windows (960x540), two
+# of which will be off-screen.  The feeds will be rotated through the window positions, keeping
+# four on-screen and two off, but showing all of them within a few seconds.
+
+# The window size dictates the maximum resolution of your camera feeds.  Avoid asking the RPi
+# to downscale video in real time; it won't do well.  Upscaling is fine. Small downscaling on
+# more powerful RPis (2B, 3B, 3B+) may work fairly well but will increase load.
+
+### Gather information for the layout configuraton file ###
+
+# Select RTSP (or whatever) feeds you camera (or NVR) supplies that are equal to or smaller than
+# the resolution of your display windows.  The examples below generally abide by that guideline.
+
+# However, in our example /etc/displaycameras/layout.conf.defaultlayout file, we setup for Ubiquiti
+# cameras and NVR, RPi 3B or 3B+, six feeds, and 1080p monitors; we have successfully tested a feed
+# resolution of 1024x576 on that equipment in our environment with acceptable load values (<1.0) and memory
+# utilization. This breaks our guidelines about selecting resolutions <= window size, but also demonstrates
+# when that is ok (i.e., we're not asking the hardware to output more resoution than it will support
+# [4k] in total camera feeds, the downscaling is relatively minor, and we have sufficient hardware
+# and network bandwidth).  We also want the crisp display of a slightly downscaled feed over the almost
+# 150% upscaled low-res feed (in a 960x540 window), especially since we have the resources.
+
+# Record your window names and coordinates (on-screen [and off if you plan to rotate a large
+# array of cameras through a smaller array of on screen windows]), cameras names
+# and camera feeds.
+
+# Camera names are used to identify the individual omxplayer instances playing each of them.
+# The camera feeds should be setup in the same order as the names.
+# Window names are not used for very much and are mostly to help make sense of the layout files.
+# Window coordinates are crucial, and their order defines where the camera feeds are initially
+# displayed on startup (i.e., the first camera name/feed in the first window).  If rotation is enabled,
+# camera feeds progress through the windows as in the order they are defined here (usually left-to-right,
+# top-to-bottom).  Rotation is disabled by default; so, if you need to rotate, remember
+# to uncomment the rotation="true" line.
+
+### Record the Layout ###
+
+# It is important to configure the /etc/displaycameras/layout.conf.defaultlayout file at a very
+# minimum.  Example layout files for several screen resolutions are included in the /etc/displaycameras
+# directory.
+
+# At a minimum, in the default layout configuration file, setup display window names, coordinates, camera names
+# and associated feeds.  You may have more windows than cameras, but not vice versa.
+
+# If there is any chance the RPi will move from display to display, or you want a fleet or RPis to auto-detect
+# display resolution and select a pre-defined layout configuration file based on that resolution, you should
+# enable 'displaydetect' in the global options above, and setup as many pre-defined layout files as possible
+# with the naming convention of /etc/displaycameras/layout.conf.<mode> where <mode> is the target display's
+# resolution (e.g. /etc/displaycameras/layout.conf.1440x900 for a 1440x900 display).  Displays whose mode
+# does not have a corresponding layout configuration file will use the default layout file.
+
+## Window names
+
+# Configure at least as many windows as there are cameras.  Use off-screen
+# Windows to render cameras off-screen and rotate them back on (showing more
+# cameras than there are on-screen windows.  Unused off-screen windows are
+# ignored as long as they are at the end of the array.
+
+# !!!! WARNING !!!!
+# Never, never, never configure window space with negative x or y positions!!!
+# Off screen to the left or above the primary monitor Window coordinates like
+# ""-960 0 -1 539" \" are broken.
+# omxplayer is documented as supporting them, but it creates broken playback in testing.
+
+# 2x2 screen with 3 off-screen windows
+#windows=(upper_left upper_right lower_left lower_right off_screen off_screen2 off_screen3)
+# 3x3 screen with 3 off-screen windows
+#windows=(upper_left upper_center upper_right mid_left mid_center mid_right lower_left lower_center lower_right off_screen off_screen2 off_screen3)
+# Large Upper Left with two to the right and three below (like the UBNT layout)
+#windows=(large_left upper_right mid_right lower_left lower_center lower_right off_screen off_screen2 off_screen3)
+# Make sure to account for each window above in the list below.
+
+## Windows positions
+
+# Use mid-res feeds with 2x2 layout with 2 rows of 1/2HD windows (960x540).
+# I recommend commenting out the second row with a 2x2 layout (and just using
+# the 3rd row). Ensure all uncommented lines end with " \".
+# Use low-res feeds with 3x3 layout with 3 rows of 1/3HD windows (640x360).
+
+#window_positions=(
+#First Row
+#large_left 1280x720
+#"0 0 1279 719" \
+#upper_left
+# 960x540
+#"0 0 959 539" \
+# 640x360
+#"0 0 639 359" \
+# 720x450
+#"0 0 719 449" \
+#upper_center
+# 640x360
+#"640 0 1279 359" \
+#upper_right
+# 960x540
+#"960 0 1920 539" \
+# 640x360
+#"1280 0 1920 359" \
+# 720x450
+#"720 0 1439 449" \
+
+#Second Row (missing all but the far right window because large_left is double size
+# These windows will only be 640x360 in a 3-row layout (3x3, probably).
+#mid_left
+#"0 360 639 719" \
+#mid_center
+#"640 360 1279 719" \
+#mid_right
+#"1280 360 1920 719" \
+
+#Third Row (all the way across the bottom)
+#lower_left
+# 960x540
+#"0 540 959 1079" \
+# 640x360
+#"0 720 639 1079" \
+# 720x450
+#"0 450 719 899" \
+#lower_center
+# 640x360
+#"640 720  1279 1079" \
+#lower_right
+# 960x540
+#"960 540  1919 1079" \
+# 640x360
+#"1280 720  1919 1079" \
+# 720x450
+#"720 450 1439 899" \
+
+#off-screen
+# Three each of either 1/3HD or 1/2HD windows (corresponding to 3x3 and 2x2
+# layouts).  3x3 layouts do best with low-res feeds.  2x2 is best with mid-res.
+# For the love of God, do not ask the Pi to scale DOWN feeds; don't use mid-res
+# feeds in a 3x3 layout.
+# 640x360 window just off-screen to the right
+#"1920 0 2559 359" \
+# 720x450
+#"1440 0 2159 449" \
+# 960x540 window just off-screen to the right
+#"1920 0 2879 539" \
+# 640x360 window just below the other
+#"1920 360 2559 719" \
+# 720x450
+#"1440 450 2159 899" \
+# 960x540 window just below the other
+#"1920 540 2879 1079" \
+# 640x360 window just below the other two
+#"1920 720 2559 1079" \
+# 960x540 window just to the right of the first
+#"2880 0 3839  539" \
+#)
+
+## Camera Names
+
+#camera_names=(NE SE South SW West Vestibule)
+# Make sure to account for each camera above in the list of feeds below.
+
+## Camera Feeds
+
+# Account for each camera name by putting its feed in the array below.
+# Ensure each line ends in " \".
+# Pick appropriate resolution feeds for your window layout.  3x3 layouts should
+# use low-res feeds.  2x2 fit mid-res with a bit of upscaling.  Large left
+# windows also fit a mid-res feed.
+
+# Hi-Res (don't use unless displaying only one window full screen
+#camera_feeds=( \
+#NE
+#"<Camera stream URL>" \
+#SE
+#"<Camera stream URL>" \
+#South
+#"<Camera stream URL>" \
+#SW
+#"<Camera stream URL>" \
+#West
+#"<Camera stream URL>" \
+#Vestibule
+#"<Camera stream URL>" \
+#)
+
+# Are we rotating?
+# rotation="true"
