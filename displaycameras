@@ -312,6 +312,18 @@ done
 echo $DISPLAY_SEQUENCE > $DISPLAY_SEQUENCE_FILE
 ;;
 
+status)
+for i in "${camera_names[@]}"
+do
+	status="`omxplayer_dbuscontrol $i status 2>/dev/null`"
+	if [[ "$status" != "Playing"* ]]; then
+		echo "$i is NOT playing"
+	else
+		echo "$i is $status"
+	fi
+done
+;;
+
 positions)
 for i in "${camera_names[@]}"
 do
@@ -321,7 +333,7 @@ done
 ;;
 
 *)
-echo "Usage: /usr/bin/displaycameras {start|stop|restart|repair|status|positions|echo|rotate|rotaterev}"
+echo "Usage: /usr/bin/displaycameras {start|stop|restart|repair|status|positions|rotate|rotaterev}"
 exit 1
 ;;
 esac
