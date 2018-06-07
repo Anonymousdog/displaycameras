@@ -3,24 +3,30 @@ If installing on 'nix with other init systems, you will have to edit the install
 The main script, normally installed at /usr/bin/displaycameras has an LSB header and will run as a systemv init script (if copied to /etc/init.d/).
 Maybe just symlink to the /usr/bin/ location (untested)?  No other init systems have been tested.
 
+## Unpack Package ##
+'tar -xvzf <source_code.tar.gz>'
+
+## Make Installer Executable ##
+'chmod +x install.sh'
+
 ## Installation ##
-run 'sudo install.sh'
+'sudo install.sh'
 Accept the offer to view the README after successful installation and follow the instructions therein
 
 ## Upgrade ##
-run 'sudo install.sh upgrade'
+'sudo install.sh upgrade'
 No changes will be made to your existing config files, cron job setup, gpu memory allocation, or hdmi overscan setup.
 
 ## Removal ##
-1. Stop the service 'sudo systemctl stop displaycameras.service'
-2. Disable the service 'sudo systemctl disable displaycameras.service'
+1. Stop the service: 'sudo systemctl stop displaycameras.service'
+2. Disable the service: 'sudo systemctl disable displaycameras.service'
 3. Remove the files:
 	a. Remove the config directory, 'sudo rm -R /etc/displaycameras'
 	b. Remove the service file, 'sudo rm /etc/systemd/system/displaycameras.service'
 	c. Remove the scripts, 'sudo rm /usr/bin/omxplayer_dbuscontrol /usr/bin/black.png /usr/bin/rotatedisplays'
 	d. Remove the crontab file, 'sudo rm /etc/cron.d/repaircameras && sudo systemctl restart cron'
-4. Remove the pre-requisites (optional), 'for each package in omxplayer fbi; do sudo apt-get purge $package -y; done'
-5. Remove pre-requisites' dependencies (optional), 'sudo apt-get autoremove -y'
+4. Remove the pre-requisites (optional): 'for each package in omxplayer fbi; do sudo apt-get purge $package -y; done'
+5. Remove pre-requisites' dependencies (optional): 'sudo apt-get autoremove -y'
 
 ## Post Instalation Instruction ##
 ==== CONFIGURATION ===="
@@ -42,6 +48,11 @@ All files in /etc/displaycameras/ which follow the naming convention 'layout.con
 Unless you enable display detection in the main config file, the system will always use the default layout conf file.
 == Default Layout Config File ==
 The default layout file now has rotation disabled by default; so, it's safe to throw your camera names and feeds in there and just use it if you want an onscreen 2x2 matrix on reliably 1080p displays.  If you have more than four cameras, you'll want to uncomment the last line.
+
+==== TESTING ====
+Test by starting the service manually, "sudo /usr/bin/displaycameras start", to see the full output of the script.  In the main config file, /etc/displaycameras/displaycameras.conf, adjust feedsleep upward until you no longer see script output reflecting omxplayer playback (not startup)
+retries.  Once that is resolved, adjust startsleep upward until you no longer see script output reflecting omxplayer startup or playback retries.  Increase retries if results are inconsistent but you want short startup or
+feedsleep values (for quicker startup).
 
 ==== Advanced Configurations ====
 Perform all the steps in the minimal configuration and review the following options for tweaks to your setup.
@@ -68,8 +79,3 @@ Installation ensures there is a "disable_overscan=1" line in your /boot/config.t
 file.  This disables overscan compensation which allows display resolutions
 autodetection to work properly.  We recommend you setup your monitor to disable overscan.
 It is often enabled by default on televisions and some commercial displays.
-
-==== TESTING ====
-Test by starting the service manually, "sudo /usr/bin/displaycameras start", to see the full output of the script.  In the main config file, /etc/displaycameras/displaycameras.conf, adjust feedsleep upward until you no longer see script output reflecting omxplayer playback (not startup)
-retries.  Once that is resolved, adjust startsleep upward until you no longer see script output reflecting omxplayer startup or playback retries.  Increase retries if results are inconsistent but you want short startup or
-feedsleep values (for quicker startup).
