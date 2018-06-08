@@ -1,0 +1,43 @@
+# This is the camera feed/windows layout configuration file for the
+# displaycameras service.  It ONLY configures the layout and feeds for
+# the cameras; the rest of the configuration is in displaycameras.conf.
+# See the comments in that file for notes on configuring the below.
+
+# This example defines two 1024x600 windows, one of which is off-screen to the right,
+# through which the service rotates two camera feeds on a 1024x600 monitor.
+
+# Window names
+
+# 1x1 screen (for 1024x600 screens)
+windows=(on_screen off_screen)
+# Make sure to account for each window above in the list below.
+
+# Windows positions
+
+window_positions=(
+#First Row
+#on_screen
+# 1024x600
+"0 0 1023 599" \
+#off_screen
+"1024 0 2047 599" \
+)
+
+# Camera Names
+
+camera_names=(cam1 cam2)
+# Make sure to account for each camera above in the list of feeds below.
+
+# Camera Feeds
+
+camera_feeds=(
+# Mid-Res
+# cam1
+"rtsp://xxx.xxx.xxx.xxx/yyyyy_1" \
+# cam2
+"rtsp://xxx.xxx.xxx.xxx/yyyyy_1" \
+)
+
+# Are we rotating cameras through the window matrix?  Set this explicitly to
+# "false" if not desired in this display layout.
+rotate="true"
