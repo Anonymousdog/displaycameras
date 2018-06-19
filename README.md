@@ -36,7 +36,6 @@ No changes will be made to your existing config files, cron job setup, gpu memor
 4. Remove the pre-requisites (optional): 'for each package in omxplayer fbi; do sudo apt-get purge $package -y; done'
 5. Remove pre-requisites' dependencies (optional): 'sudo apt-get autoremove -y'
 
-## Post Instalation Instruction
 # CONFIGURATION
 Remember to edit the /etc/displaycameras/displaycameras.conf and /etc/displaycameras/layout.conf.default files for your environment.
 
