@@ -62,6 +62,13 @@ Test by starting the service manually, "sudo /usr/bin/displaycameras start", to 
 retries.  Once that is resolved, adjust startsleep upward until you no longer see script output reflecting omxplayer startup or playback retries.  Increase retries if results are inconsistent but you want short startup or
 feedsleep values (for quicker startup).
 
+=== Debugging ===
+== Verify omxplayer will play your feed RTSP URLs ==
+To definitively rule out problems with omxplayer not playing your RTSP feeds, run the following in an SSH session:
+'sudo omxplayer --no-keys --no-osd --avdict rtsp_transport:tcp <camera feed URL> --live -n -1 --timeout 30'.  If your feed plays, there's a problem with your config for displaycameras.  If not, there's a problem with your URL or omxplayer won't play your feed.
+== Verify valid feed RTSP URLs
+If that happens, you can verify the feed by trying to play it from VLC on the RPi or another device on the same network as the RPi.  If VLC plays it, you know the stream exists and that you have the correct URL.
+
 ==== Advanced Configurations ====
 Perform all the steps in the minimal configuration and review the following options for tweaks to your setup.
 == Display Detection ==
