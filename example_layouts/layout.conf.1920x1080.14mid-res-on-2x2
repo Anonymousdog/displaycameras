@@ -1,0 +1,91 @@
+# This is the camera feed/windows layout configuration file for the
+# displaycameras service.  It ONLY configures the layout and feeds for
+# the cameras; the rest of the configuration is in displaycameras.conf.
+# See the comments in that file for notes on configuring the below.
+
+# 2x2 on-screen matrix with 10 off-screen windows (1/2HD each)
+# This strains the capabilities of the RPi 3B and 3B+, requires a custom gpu memory split (320MB recommended) and careful testing before deployment.
+# Flirc case (or active RPi cooling) recommended.
+
+# Window names
+
+windows=(upper_left upper_right lower_left lower_right off_screen off_screen2 off_screen3 off_screen4 off_screen5 off_screen6 off_screen7 off_screen8 off_screen9 off_screen10)
+# Make sure to account for each window above in the list below.
+
+# Windows positions
+
+window_positions=(
+#First Row
+#upper_left
+# 960x540
+"0 0 959 539" \
+#upper_right
+# 960x540
+"960 0 1920 539" \
+
+#Second Row (missing all but the far right window because large_left is double size
+#lower_left
+# 960x540
+"0 540 959 1079" \
+#lower_right
+# 960x540
+"960 540  1919 1079" \
+
+#off-screen
+# 960x540
+"1920 0 2879 539" \
+"1920 540 2879 1079" \
+"1920 1080 2879 1619" \
+"1920 1620 2879 2159" \
+"1920 1080 2879 1619" \
+"1920 1620 2879 2159" \
+"2880 0 3839 539" \
+"2880 540 3839 1079" \
+"0 1080 959 1619" \
+"0 1620 959 2159" \
+)
+
+# Camera Names
+
+camera_names=(cam1 cam2 cam3 cam4 cam5 cam6 cam7 cam8 cam9 cam10 cam11 cam12 cam13 cam14)
+# Make sure to account for each camera above in the list of feeds below.
+
+# Camera Feeds
+
+camera_feeds=( \
+# Mid-Res feeds are slightly downscaled to 960x540
+# "rtsp://xxx.xxx.xxx.xxx:7447/yyyyyyyyyy_1" \
+#cam1
+"<RTSP URL>" \
+#cam2
+"<RTSP URL>" \
+#cam3
+"<RTSP URL>" \
+#cam4
+"<RTSP URL>" \
+#cam5
+"<RTSP URL>" \
+#cam6
+"<RTSP URL>" \
+#cam7
+"<RTSP URL>" \
+#cam8
+"<RTSP URL>" \
+#cam9
+"<RTSP URL>" \
+#cam10
+"<RTSP URL>" \
+#cam11
+"<RTSP URL>" \
+#cam12
+"<RTSP URL>" \
+#cam13
+"<RTSP URL>" \
+#cam14
+"<RTSP URL>" \
+)
+
+# Are we rotating cameras through the window matrix? (default false if not set here)
+rotate="true"
+# Set a quick rotation cycle since we have 10 displays to rotate from off screen (about 1 minute)
+rotatedelay=6
