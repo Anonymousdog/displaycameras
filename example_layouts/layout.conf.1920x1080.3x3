@@ -59,7 +59,7 @@ camera_names=(NE SE South SW West Vestibule 1stFront 1stBack 2ndHall 2ndRecep 2n
 # Camera Feeds
 
 camera_feeds=( \
-# Mid-Res
+# Low-Res
 #NE
 "rtsp://xxx.xxx.xxx.xxx:7447/yyyyy_2" \
 #SE
