@@ -51,7 +51,7 @@ camera_names=(cam1 cam2 cam3 cam4 cam5 cam6 cam7 cam8 cam9 cam10)
 # Camera Feeds
 
 camera_feeds=( \
-# Mid-Res
+# Low-Res
 #cam1
 "rtsp://xxx.xxx.xxx.xxx:7447/yyyyy_2" \
 #cam2
