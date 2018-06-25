@@ -15,8 +15,8 @@ Go to https://github.com/Anonymousdog/displaycameras/releases/latest and downloa
 Download https://github.com/Anonymousdog/displaycameras/archive/master.tar.gz
 
 ## Unpack the Archive
-'tar -xvzf ./<source_code.tar.gz>'
-'cd ./<source_code directory>' to move to the directory where the archive unpacked
+1. 'tar -xvzf ./<source_code.tar.gz>'
+2. 'cd ./<source_code directory>' to move to the directory where the archive unpacked
 
 ## Make the Installer Executable
 'chmod +x ./install.sh'
