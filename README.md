@@ -15,17 +15,18 @@ Go to https://github.com/Anonymousdog/displaycameras/releases/latest and downloa
 Download https://github.com/Anonymousdog/displaycameras/archive/master.tar.gz
 
 ## Unpack the Archive
-'tar -xvzf <source_code.tar.gz>'
+'tar -xvzf ./<source_code.tar.gz>'
+'cd ./<source_code directory>' to move to the directory where the archive unpacked
 
 ## Make the Installer Executable
-'chmod +x install.sh'
+'chmod +x ./install.sh'
 
 ## Installation
-1. 'sudo install.sh'
+1. 'sudo ./install.sh'
 2. Accept the offer to view the README after successful installation and follow the instructions therein
 
 ## Upgrade
-'sudo install.sh upgrade'
+'sudo ./install.sh upgrade'
 
 No changes will be made to your existing config files, cron job setup, gpu memory allocation, or hdmi overscan setup.
 
