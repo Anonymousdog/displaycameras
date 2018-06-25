@@ -65,7 +65,7 @@ The default layout file now has rotation disabled by default; so, it's safe to t
 ## TESTING
 Test by starting the service manually, "sudo /usr/bin/displaycameras start", to see the full output of the script.  In the main config file, /etc/displaycameras/displaycameras.conf, adjust feedsleep upward until you no longer see script output reflecting omxplayer playback (not startup) retries.
 
-Once that is resolved, adjust startsleep upward until you no longer see script output reflecting omxplayer startup or playback retries.  Increase retries if results are inconsistent but you want short startup orfeedsleep values (for quicker startup).
+Once that is resolved, adjust startsleep upward until you no longer see script output reflecting omxplayer startup or playback retries.  Increase retries if results are inconsistent but you want short startup or feed sleep values (for quicker startup).
 
 ### Debugging
 #### Verify omxplayer will play your feed RTSP URLs
