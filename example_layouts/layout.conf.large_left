@@ -51,7 +51,7 @@ window_positions=(
 # 640x360 window just below the other
 "1920 360 2559 719" \
 # 640x360 window just below the other two
-"1920 720 2559 1079")
+"1920 720 2559 1079" \
 )
 
 # Camera Names
