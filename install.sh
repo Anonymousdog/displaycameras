@@ -129,10 +129,10 @@ systemctl daemon-reload
 systemctl enable displaycameras
 
 echo "Installation Successful!"
-read -p "See the README? [Y/y/N/n]"
+read -p "See the README.md? [Y/y/N/n]"
 if [ "$REPLY" = "Y" -o "$REPLY" = "y" ]; then
 	echo "Use the space bar (or PgDn) to page down, PgUp to page up, q to quit"
 	read -p "Press Enter to begin."
-	less $DIR/README
+	less $DIR/README.md
 fi
 exit 0
