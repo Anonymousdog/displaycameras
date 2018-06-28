@@ -1,0 +1,43 @@
+# This is the camera feed/windows layout configuration file for the
+# displaycameras service.  It ONLY configures the layout and feeds for
+# the cameras; the rest of the configuration is in displaycameras.conf.
+# See the comments in that file for notes on configuring the below.
+
+# Window names
+
+# 1x1 screen with 3 off-screen windows
+windows=(on_screen off_screen off_screen2 off_screen3)
+# Make sure to account for each window above in the list below.
+
+# Windows positions
+
+window_positions=(
+#on_screen
+"0 0 1919 1079" \
+
+#off-screen
+"1920 0 3839 1079 " \
+"1920 1080 3839 2159" \
+"3840 0 5759 1079" \
+)
+
+# Camera Names
+camera_names=(cam1 cam2 cam3 cam4)
+
+# Camera Feeds
+
+camera_feeds=( \
+#high-res
+#cam1
+"rtsp://xxx.xxx.xxx.xxx:7447/yyyyyyyyy_0" \
+#cam2
+"rtsp://xxx.xxx.xxx.xxx:7447/yyyyyyyyy_0" \
+#cam3
+"rtsp://xxx.xxx.xxx.xxx:7447/yyyyyyyyy_0" \
+#cam4
+"rtsp://xxx.xxx.xxx.xxx:7447/yyyyyyyyy_0" \
+)
+
+# Are we rotating cameras through the window matrix? (default false if not set here)
+rotate="true"
+rotatedelay=8
