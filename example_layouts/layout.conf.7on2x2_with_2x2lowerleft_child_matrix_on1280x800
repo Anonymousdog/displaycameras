@@ -21,7 +21,7 @@ window_positions=(
 #upper_right
 "640 0 1279 399" \
 
-#Second Row (missing all but the far right window because large_left is double size
+#Second Row
 #lower_right
 # 640x400
 "640 400 1279 799" \
