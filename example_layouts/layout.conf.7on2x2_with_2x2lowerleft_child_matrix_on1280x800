@@ -1,0 +1,64 @@
+# This is the camera feed/windows layout configuration file for the
+# displaycameras service.  It ONLY configures the layout and feeds for
+# the cameras; the rest of the configuration is in displaycameras.conf.
+# See the comments in that file for notes on configuring the below.
+
+# 2x2 on-screen matrix with lower-left matrix being broken up into four sub-windows
+# This strains the capabilities of the RPi 3B and 3B+ due to the aggressive downscaling for the four small windows
+
+# Window names
+
+windows=(upper_left upper_right lower_right ll_upperleft ll_upperright ll_lowerleft ll_lowerright)
+# Make sure to account for each window above in the list below.
+
+# Windows positions
+# 1280x800 screen
+
+window_positions=(
+#upper_left
+# 640x400
+"0 0 639 399" \
+#upper_right
+"640 0 1279 399" \
+
+#Second Row (missing all but the far right window because large_left is double size
+#lower_right
+# 640x400
+"640 400 1279 799" \
+
+#Lower Left Quadrant
+# 320x200
+"0 400 319 599" \
+"320 400 639 599" \
+"0 600 319 799" \
+"320 600 619 799" \
+)
+
+# Camera Names
+
+camera_names=(cam1 cam2 cam3 cam4 cam5 cam6 cam7)
+# Make sure to account for each camera above in the list of feeds below.
+
+# Camera Feeds
+
+camera_feeds=( \
+#Low-Res feeds are agressively downscaled to fit the lower left quadrant
+# "rtsp://xxx.xxx.xxx.xxx:7447/yyyyyyyyyy_2" \
+#cam1
+"<RTSP URL>" \
+#cam2
+"<RTSP URL>" \
+#cam3
+"<RTSP URL>" \
+#cam4
+"<RTSP URL>" \
+#cam5
+"<RTSP URL>" \
+#cam6
+"<RTSP URL>" \
+#cam7
+"<RTSP URL>" \
+)
+
+# Are we rotating cameras through the window matrix? (default false if not set here)
+rotate="false"
