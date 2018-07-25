@@ -54,18 +54,20 @@ camera_feeds=( \
 # "rtsp://xxx.xxx.xxx.xxx/yyyyy_1" \
 # Low-Res otherwise
 # "rtsp://xxx.xxx.xxx.xxx/yyyyy_2" \
+# Add --layer n to the feed definition to designate display layer for this feed
+# valid layers are 0-7 with 0 being on the bottom (covered by higher layers)
 #NE
-"<Camera stream URL>" \
+"<Camera stream URL> --layer 0" \
 #SE
-"<Camera stream URL>" \
+"<Camera stream URL> --layer 1" \
 #South
-"<Camera stream URL>" \
+"<Camera stream URL> --layer 0" \
 #SW
-"<Camera stream URL>" \
+"<Camera stream URL> --layer 0" \
 #West
-"<Camera stream URL>" \
+"<Camera stream URL> --layer 0" \
 #Vestibule
-"<Camera stream URL>" \
+"<Camera stream URL> --layer 0" \
 )
 
 # Are we rotating cameras through the window matrix? (default false if not set here)
