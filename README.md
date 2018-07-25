@@ -54,6 +54,13 @@ All of these variables may be added to one or more layout configuration files to
 
 ### Camera and Window Layout
 * Screen/window matrix setup, window names, camera names, and camera feeds should be here (and most definitely NOT in the main config file).
+
+!!!WARNING!!!
+
+Camera Names must conform to DBUS namespace restrictions: valid UTF-8 only containing the ASCII characters "[A-Z][a-z][0-9]_" and must not begin with a digit or dot/period/"."
+
+!!!WARNING!!!
+
 * Global options (exept for displaydetect) in the main conf file may be overridden (for specific displays) by supplying their values in these files.
 * Do NOT override 'displaydetect' settings in a layout config file; you will create problems.
 #### Layout Conf Files
