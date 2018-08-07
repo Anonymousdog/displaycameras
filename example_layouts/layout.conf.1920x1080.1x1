@@ -29,6 +29,7 @@ window_positions=(
 "3840 0 5759 1079" \
 #off_screen
 "5780 0 7679 1079" \
+)
 
 # Camera Names
 
