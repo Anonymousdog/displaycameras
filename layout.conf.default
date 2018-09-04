@@ -23,7 +23,7 @@ window_positions=(
 "0 0 959 539" \
 #upper_right
 # 960x540
-"960 0 1920 539" \
+"960 0 1919 539" \
 
 #Second Row (missing all but the far right window because large_left is double size
 #lower_left
