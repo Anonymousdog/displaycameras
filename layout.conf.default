@@ -31,7 +31,7 @@ window_positions=(
 "0 540 959 1079" \
 #lower_right
 # 960x540
-"960 540  1919 1079" \
+"960 540 1919 1079" \
 
 #off-screen
 # 960x540 window just off-screen to the right
