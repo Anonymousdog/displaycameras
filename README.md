@@ -15,31 +15,31 @@ Go to https://github.com/Anonymousdog/displaycameras/releases/latest and downloa
 Download https://github.com/Anonymousdog/displaycameras/archive/master.tar.gz
 
 ## Unpack the Archive
-1. 'tar -xvzf ./<source_code.tar.gz>'
-2. 'cd ./<source_code directory>' to move to the directory where the archive unpacked
+1. `tar -xvzf ./<source_code.tar.gz>`
+2. `cd ./<source_code directory>` to move to the directory where the archive unpacked
 
 ## Make the Installer Executable
-'chmod +x ./install.sh'
+`chmod +x ./install.sh`
 
 ## Installation
-1. 'sudo ./install.sh'
+1. `sudo ./install.sh`
 2. Accept the offer to view the README after successful installation and follow the instructions therein
 
 ## Upgrade
-'sudo ./install.sh upgrade'
+`sudo ./install.sh upgrade`
 
 No changes will be made to your existing config files, cron job setup, gpu memory allocation, or hdmi overscan setup.
 
 ## Removal
-1. Stop the service: 'sudo systemctl stop displaycameras.service'
-2. Disable the service: 'sudo systemctl disable displaycameras.service'
+1. Stop the service: `sudo systemctl stop displaycameras.service`
+2. Disable the service: `sudo systemctl disable displaycameras.service`
 3. Remove the files:
-	a. Remove the config directory, 'sudo rm -R /etc/displaycameras'
-	b. Remove the service file, 'sudo rm /etc/systemd/system/displaycameras.service'
-	c. Remove the scripts, 'sudo rm /usr/bin/omxplayer_dbuscontrol /usr/bin/black.png /usr/bin/rotatedisplays'
-	d. Remove the crontab file, 'sudo rm /etc/cron.d/repaircameras && sudo systemctl restart cron'
-4. Remove the pre-requisites (optional): 'for each package in omxplayer fbi; do sudo apt-get purge $package -y; done'
-5. Remove pre-requisites' dependencies (optional): 'sudo apt-get autoremove -y'
+	a. Remove the config directory, `sudo rm -R /etc/displaycameras`
+	b. Remove the service file, `sudo rm /etc/systemd/system/displaycameras.service`
+	c. Remove the scripts, `sudo rm /usr/bin/omxplayer_dbuscontrol /usr/bin/black.png /usr/bin/rotatedisplays`
+	d. Remove the crontab file, `sudo rm /etc/cron.d/repaircameras && sudo systemctl restart cron`
+4. Remove the pre-requisites (optional): `for each package in omxplayer fbi; do sudo apt-get purge $package -y; done`
+5. Remove pre-requisites' dependencies (optional): `sudo apt-get autoremove -y`
 
 # CONFIGURATION
 Remember to edit the /etc/displaycameras/displaycameras.conf and /etc/displaycameras/layout.conf.default files for your environment.
@@ -70,14 +70,14 @@ Camera Names must conform to DBUS namespace restrictions: valid UTF-8 only conta
 The default layout file now has rotation disabled by default; so, it's safe to throw your camera names and feeds in there and just use it if you want an onscreen 2x2 matrix on reliably 1080p displays.  If you have more than four cameras, you'll want to uncomment the last line.
 
 ## TESTING
-Test by starting the service manually, "sudo /usr/bin/displaycameras start", to see the full output of the script.  In the main config file, /etc/displaycameras/displaycameras.conf, adjust feedsleep upward until you no longer see script output reflecting omxplayer playback (not startup) retries.
+Test by starting the service manually, `sudo /usr/bin/displaycameras start`, to see the full output of the script.  In the main config file, /etc/displaycameras/displaycameras.conf, adjust feedsleep upward until you no longer see script output reflecting omxplayer playback (not startup) retries.
 
 Once that is resolved, adjust startsleep upward until you no longer see script output reflecting omxplayer startup or playback retries.  Increase retries if results are inconsistent but you want short startup or feed sleep values (for quicker startup).
 
 ### Debugging
 #### Verify omxplayer will play your feed RTSP URLs
 To definitively rule out problems with omxplayer not playing your RTSP feeds, run the following in an SSH session:
-'sudo omxplayer --no-keys --no-osd --avdict rtsp_transport:tcp <camera feed URL> --live -n -1 --timeout 30'.  
+`sudo omxplayer --no-keys --no-osd --avdict rtsp_transport:tcp <camera feed URL> --live -n -1 --timeout 30`
 	
 If your feed plays, there's a problem with your config for displaycameras.  If not, there's a problem with your URL or omxplayer won't play your feed.
 #### Verify valid feed RTSP URLs
