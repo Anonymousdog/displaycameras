@@ -51,9 +51,8 @@ window_positions=(
 
 # Camera Names
 
-#camera_names=(NE SE South SW West Vestibule SW2 West2 Vest2 NE2 SE2)
+camera_names=(NE SE South SW West Vestibule SW2 West2 Vest2)
 #camera_names=(NE SE South SW West Vestibule SW2 West2 Vest2 NE2 SE2 South2 SW3 West3 Vest3 NE3)
-camera_names=(NE SE South SW West Vestibule 1stFront 1stBack 2ndHall 2ndRecep 2ndStair 3rdHall 3rdRecep 3rdStair)
 # Make sure to account for each camera above in the list of feeds below.
 
 # Camera Feeds
