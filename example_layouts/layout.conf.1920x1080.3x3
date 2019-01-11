@@ -5,8 +5,8 @@
 
 # Window names
 
-# 2x2 screen with 3 off-screen windows
-windows=(upper_left upper_middle upper_right center_left center_middle center_right lower_left lower_middle lower_right off_screen off_screen2 off_screen3 off_screen4 off_screen5)
+# 3x3 640x360 on-screen and 6 off-screen windows
+windows=(upper_left upper_middle upper_right center_left center_middle center_right lower_left lower_middle lower_right off_screen off_screen2 off_screen3 off_screen4 off_screen5 off_screen6)
 # Make sure to account for each window above in the list below.
 
 # Windows positions
@@ -51,8 +51,8 @@ window_positions=(
 
 # Camera Names
 
-camera_names=(NE SE South SW West Vestibule SW2 West2 Vest2)
-#camera_names=(NE SE South SW West Vestibule SW2 West2 Vest2 NE2 SE2 South2 SW3 West3 Vest3 NE3)
+camera_names=(NE SE South SW West Vestibule NE2 SE2 South2)
+#camera_names=(NE SE South SW West Vestibule NE2 SE2 South2 SW2 West2 Vest2)
 # Make sure to account for each camera above in the list of feeds below.
 
 # Camera Feeds
@@ -71,25 +71,26 @@ camera_feeds=( \
 "<Camera stream URL>" \
 #Vestibule
 "<Camera stream URL>" \
-#1stBack
+#NE2
 "<Camera stream URL>" \
-#1stFront
+#SE2
 "<Camera stream URL>" \
-#2ndHall
+#South2
 "<Camera stream URL>" \
-#2ndRecep
+#It's ok to define more feeds than cameras, but the system attempts to display only named cameras (i.e., names in the camera_names variable).
+#SW2
 "<Camera stream URL>" \
-#2ndStair
+#West2
 "<Camera stream URL>" \
-#3rdHall
-"<Camera stream URL>" \
-#3rdRecep
-"<Camera stream URL>" \
-#3rdStair
-"<Camera stream URL>" \
-#Vest3
+#Vest2
 "<Camera stream URL>" \
 #NE3
+"<Camera stream URL>" \
+#SE3
+"<Camera stream URL>" \
+#South3
+"<Camera stream URL>" \
+#SW3
 "<Camera stream URL>" \
 )
 
