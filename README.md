@@ -74,6 +74,8 @@ Test by starting the service manually, `sudo /usr/bin/displaycameras start`, to 
 
 Once that is resolved, adjust startsleep upward until you no longer see script output reflecting omxplayer startup or playback retries.  Increase retries if results are inconsistent but you want short startup or feed sleep values (for quicker startup).
 
+When you complete testing, clean up by stopping all test processes with `sudo /usr/bin/displaycameras stop`.
+
 ### Debugging
 #### Verify omxplayer will play your feed RTSP URLs
 To definitively rule out problems with omxplayer not playing your RTSP feeds, run the following in an SSH session:
@@ -84,6 +86,21 @@ If your feed plays, there's a problem with your config for displaycameras.  If n
 If that happens, you can verify the feed by trying to play it from VLC on the RPi or another device on the same network as the RPi.
 
 If VLC plays it, you know the stream exists and that you have the correct URL.
+
+## Managing the Service
+The installer registers and activates the displaycameras service; so, it will start with the system (once networking and DBUS are running).
+
+### Manual Service Management
+#### Start
+`sudo systemctl start displaycameras`
+#### Stop
+`sudo systemctl stop displaycameras`
+#### Restart
+`sudo systemctl restart displaycameras`
+#### Systemd Status Display
+`sudo systemctl status displaycameras`
+#### Debugging Status Information
+`sudo /usr/bin/displaycameras status` <-- this is not a call to systemd, just the script.
 
 ## Advanced Configurations
 Perform all the steps in the minimal configuration and review the following options for tweaks to your setup.
