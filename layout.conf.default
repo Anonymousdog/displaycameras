@@ -70,3 +70,6 @@ camera_feeds=( \
 
 # Are we rotating cameras through the window matrix? (default false if not set here)
 # rotate="true"
+
+# A variable setting how many windows to rotate through in one operation.  Setting this to the number of on-screen windows at one time achieves a sort of screen "flop" from one set of feeds to another (or a series of screen fulls)
+# If you set this higher than the number of cameras, the system just sets it back to 1.  Sane values are 1 through the number of cameras configured.
