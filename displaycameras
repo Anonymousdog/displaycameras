@@ -81,6 +81,10 @@ cameras="${#camera_names[@]}"
 # Set the max camera rotation sequence as one less than the number of cameras
 # (since it starts at zero).
 max_seq=$((cameras-1))
+# Ensure sequence step value is reasonable
+if [ "$seq_step" = "" ] || [ "$seq_step" -gt "$max_seq" ] || [ "$seq_step" -lt "1" ]; then
+	seq_step=1
+fi
 
 # Figure out the current display sequence or set it to zero if it doesn't exist.
 if [ ! -f $DISPLAY_SEQUENCE_FILE ]; then
@@ -164,7 +168,7 @@ if [ "$rotate" = "true" ]; then
 		rotatedelay=5
 	fi
 	echo "Starting camera rotation"
-	rotatedisplays $rotatedelay &
+	rotatedisplays $rotatedelay $seq_step &
 fi
 ;;
 
@@ -260,7 +264,7 @@ do
 			fi
 			if [ "$2" != "startup" ]; then
 				echo "Restarting camera rotation"
-				rotatedisplays $rotatedelay &
+				rotatedisplays $rotatedelay $seq_step &
 			fi
 		fi
 	fi
@@ -270,7 +274,7 @@ done
 rotate)
 # Do nothing unless the service PID file exists
 if [ ! -f $PIDFILE ]; then exit 0; fi
-DISPLAY_SEQUENCE=$((DISPLAY_SEQUENCE-1))
+DISPLAY_SEQUENCE=$((DISPLAY_SEQUENCE-$seq_step))
 if [ "$DISPLAY_SEQUENCE" -lt "0" ]; then
         DISPLAY_SEQUENCE="$max_seq"
 fi
@@ -293,7 +297,7 @@ echo $DISPLAY_SEQUENCE > $DISPLAY_SEQUENCE_FILE
 
 rotaterev)
 if [ ! -f $PIDFILE ]; then exit 0; fi
-DISPLAY_SEQUENCE=$((DISPLAY_SEQUENCE+1))
+DISPLAY_SEQUENCE=$((DISPLAY_SEQUENCE+$seq_step))
 if [ "$DISPLAY_SEQUENCE" -ge "${#camera_names[@]}" ]; then
         DISPLAY_SEQUENCE=0
 fi
