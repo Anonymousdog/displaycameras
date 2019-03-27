@@ -1,7 +1,12 @@
 #!/bin/bash
 for i in `seq 1 11`; do
 sleep $1
-/usr/bin/displaycameras rotate >/dev/null 2>&1
+seq_step="$2"
+if [ "$seq_step" -gt 1 ]; then
+        /usr/bin/displaycameras rotaterev >/dev/null 2>&1
+        else
+                /usr/bin/displaycameras rotate >/dev/null 2>&1
+fi
 done
-$0 $1 &
+$0 $1 $2 &
 exit 0
