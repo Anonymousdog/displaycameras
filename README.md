@@ -110,6 +110,12 @@ Enable display detection in displaycameras.conf and setup special layout configu
 #### Rotation
 If you want to display more cameras on screen than the screen will hold, ensure you have at least as many windows defined as cameras, and uncomment the 'rotate="true"' line in the main config file (for all displays) or in a custom layout file (for a specific screen resolution).
 
+##### Rotation stepping (new - alpha feature)
+To rotate more aggressively than one feed at a time, set in the applicable layout.conf.* file "seq_step" to a integer between 1 and the number of cameras that fit on screen at any one time.
+
+##### Screen "Flop" (new - alpha feature)
+If you want rotation to show you a full screen of feeds, then show you as many as possible that were off screen, and so on until it goes back to the original set (i.e., "flopping" between unique screen-fulls of feeds), set "seq_step" equal to the number of cameras that fit on screen at one time.
+
 #### Display Blanking
 If your display shows background items from the terminal or GUI screen during rotation, you may want to enable screen "blanking" by uncommenting or adding a 'blank="true"' line in the main (for all displays) or custom layout files.
 
