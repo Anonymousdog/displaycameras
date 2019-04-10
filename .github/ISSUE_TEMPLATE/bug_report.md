@@ -4,6 +4,17 @@ about: Create a report to help us improve
 
 ---
 
+**_Before filing a bug report_**
+
+**Replicate your issue on Raspbian Lite**
+Raspbian Lite is the preferred target OS for this system.  I will not address bugs that can only be replicated on 'nix with a graphical user interface.
+
+**Ensure your operating system is up-to-date**
+...and that you can replicate the problem with an up-to-date (and rebooted) system.
+To ensure all is update, run the following in a terminal, `sudo apt-get update && sudo apt-get dist-upgrade -y && sudo apt-get auto-remove -y && sudo apt-get autoclean`
+
+_**If you do the above two things and can still replicate the issue, then...**_
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 
