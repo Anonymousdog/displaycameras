@@ -1,0 +1,56 @@
+# This is the camera feed/windows layout configuration file for the
+# displaycameras service.  It ONLY configures the layout and feeds for
+# the cameras; the rest of the configuration is in displaycameras.conf.
+# See the comments in that file for notes on configuring the below.
+
+# Window names
+
+# 2x2 screen with 3 off-screen windows
+windows=(upper_left upper_right lower_left lower_right off_screen off_screen2 off_screen3)
+# Make sure to account for each window above in the list below.
+
+# Windows positions
+
+window_positions=(
+#First Row
+#upper_left
+"0 0 639 399" \
+#upper_right
+"640 0 1279 399" \
+
+#Second Row (missing all but the far right window because large_left is double s                                                                                                  ize
+#lower_left
+"0 400 639 799" \
+#lower_right
+"640 400 1279 799" \
+
+#off-screen
+"1280 0 1919 399" \
+"1920 0 2559 399" \
+"1280 400 1919 799" \
+)
+
+# Camera Names
+
+camera_names=(Driveway Office Deck Flex)
+# Make sure to account for each camera above in the list of feeds below.
+
+# Camera Feeds
+
+camera_feeds=( \
+# Mid-Res if your RPi can handle the load
+# "rtsp://xxx.xxx.xxx.xxx/yyyyy_1" \
+# Low-Res otherwise
+# "rtsp://xxx.xxx.xxx.xxx/yyyyy_2" \
+#Driveway
+"rtsp://example.com:7447/xxxxyyyyyyzzzz" \
+#Office
+"rtsp://example.com:7447/xxxxyyyyyyzzzz" \
+#Deck
+"rtsp://example.com:7447/xxxxyyyyyyzzzz" \
+#Flex
+"rtsp://example.com:7447/xxxxyyyyyyzzzz" \
+)
+
+# Are we rotating cameras through the window matrix? (default false if not set h                                                                                                  ere)
+# rotate="true"
