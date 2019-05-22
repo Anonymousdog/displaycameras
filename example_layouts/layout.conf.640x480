@@ -1,0 +1,43 @@
+# This is the camera feed/windows layout configuration file for the
+# displaycameras service.  It ONLY configures the layout and feeds for
+# the cameras; the rest of the configuration is in displaycameras.conf.
+# See the comments in that file for notes on configuring the below.
+
+# This config rotates three 640x320 feeds through a 640x480 resolution display
+
+# Window names
+
+# 1x1 screen with 2 off-screen windows
+windows=(on_screen off_screen off_screen2)
+# Make sure to account for each window above in the list below.
+
+# Windows positions
+
+window_positions=(
+#On Screen
+#on_screen
+"0 60 639 419" \
+
+#off-screen
+"640 60 1279 419" \
+"640 480 1279 839" \
+)
+
+# Camera Names
+
+camera_names=(Rear Garage Canopy)
+# Make sure to account for each camera above in the list of feeds below.
+
+# Camera Feeds
+
+camera_feeds=( \
+#Rear
+"rtsp://xxx.xxx.xxx.xxx/yyyyy_1" \
+#Garage
+"rtsp://xxx.xxx.xxx.xxx/yyyyy_1" \
+#Canopy
+"rtsp://xxx.xxx.xxx.xxx/yyyyy_1" \
+)
+
+# Are we rotating cameras through the window matrix? (default false if not set h                                                                                                  ere)
+rotate="true"
