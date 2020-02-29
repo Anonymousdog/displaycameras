@@ -62,6 +62,16 @@ camera_feeds=(
 "<Camera stream URL>" \
 )
 
+camera_orientations=( \
+# Camera display orientation. Possible values are 0, 90, 180 and 270
+"0" \
+"0" \
+"0" \
+"0" \
+"0" \
+"0" \
+)
+
 # Are we rotating cameras through the window matrix?  Set this explicitly to
 # "false" if not desired in this display layout.
 rotate="true"

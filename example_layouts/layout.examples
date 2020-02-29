@@ -193,5 +193,16 @@
 #"<Camera stream URL>" \
 #)
 
+#camera_orientations=( 
+# Camera display orientation. Possible values are 0, 90, 180 and 270
+#"0" \
+#"0" \
+#"0" \
+#"0" \
+#"0" \
+#"0" \
+#)
+
+
 # Are we rotating?
 # rotation="true"
