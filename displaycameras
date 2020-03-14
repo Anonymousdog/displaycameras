@@ -118,7 +118,12 @@ do
 	x=$((i+$DISPLAY_SEQUENCE))
 	if [ "$x" -ge "${#camera_names[@]}" ]; then x=$((x-${#camera_names[@]}))
 	fi
-	player="omxplayer --no-keys --no-osd --avdict rtsp_transport:tcp --orientation \"${camera_orientations[$i]}\" --win \"${window_positions[$x]}\" \"${camera_feeds[$i]}\" --live -n -1 --timeout "$omx_timeout" --dbus_name "org.mpris.MediaPlayer2.omxplayer.${camera_names[$i]}" >/dev/null &"
+	if [ "${camera_crops[$i]}" != "false" ]; then 
+		camera_crop="--crop \"${camera_crops[$i]}\""
+        else 
+		camera_crop=""
+        fi
+	player="omxplayer --no-keys --no-osd --avdict rtsp_transport:tcp $camera_crop --orientation \"${camera_orientations[$i]}\" --win \"${window_positions[$x]}\" \"${camera_feeds[$i]}\" --live -n -1 --timeout "$omx_timeout" --dbus_name "org.mpris.MediaPlayer2.omxplayer.${camera_names[$i]}" >/dev/null &"
 	echo "Starting omxplayer for ${camera_names[$i]}"
 	eval $player
 	sleep $startsleep
@@ -220,6 +225,11 @@ do
 		x=$((i+$DISPLAY_SEQUENCE))
 		if [ "$x" -ge "${#camera_names[@]}" ]; then x=$((x-${#camera_names[@]}))
 		fi
+	        if [ "${camera_crops[$i]}" != "false" ]; then
+        	        camera_crop="--crop \"${camera_crops[$i]}\""
+        	else
+                	camera_crop=""
+        	fi
 		player="omxplayer --no-keys --no-osd --avdict rtsp_transport:tcp --orientation \"${camera_orientations[$i]}\" --win \"${window_positions[$x]}\" \"${camera_feeds[$i]}\" --live -n -1 --timeout "$omx_timeout" --dbus_name "org.mpris.MediaPlayer2.omxplayer.${camera_names[$i]}" >/dev/null &"
 		echo "Starting omxplayer for ${camera_names[$i]}"
 		eval $player
