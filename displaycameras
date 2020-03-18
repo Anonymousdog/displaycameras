@@ -120,14 +120,14 @@ do
 	fi
 	if [ ${#camera_crops[@]} -ne 0 ] && [ -n "${camera_crops[$i]}" ] &&  [ "${camera_crops[$i]}" != "false" ]; then
 	    camera_crop="--crop \"${camera_crops[$i]}\""
-    else
+        else
 	    camera_crop=""
-    fi
-    if [ ${#camera_orientations[@]} -ne 0 ] && [ -n "${camera_orientations[$i]}" ] &&  [ "${camera_orientations[$i]}" != "0" ]; then
-        camera_orientation="--orientation \"${camera_orientations[$i]}\""
-    else
-        camera_orientation=""
-    fi
+        fi
+        if [ ${#camera_orientations[@]} -ne 0 ] && [ -n "${camera_orientations[$i]}" ] &&  [ "${camera_orientations[$i]}" != "0" ]; then
+            camera_orientation="--orientation \"${camera_orientations[$i]}\""
+        else
+            camera_orientation=""
+        fi
 	player="omxplayer --no-keys --no-osd --avdict rtsp_transport:tcp $camera_crop $camera_orientation --win \"${window_positions[$x]}\" \"${camera_feeds[$i]}\" --live -n -1 --timeout "$omx_timeout" --dbus_name "org.mpris.MediaPlayer2.omxplayer.${camera_names[$i]}" >/dev/null &"
 	echo "Starting omxplayer for ${camera_names[$i]}"
 	eval $player
@@ -236,9 +236,9 @@ do
 		    camera_crop=""
 		fi
 		if [ ${#camera_orientations[@]} -ne 0 ] && [ -n "${camera_orientations[$i]}" ] &&  [ "${camera_orientations[$i]}" != "0" ]; then
-            camera_orientation="--orientation \"${camera_orientations[$i]}\""
+                    camera_orientation="--orientation \"${camera_orientations[$i]}\""
 		else
-            camera_orientation=""
+                    camera_orientation=""
 		fi
 		player="omxplayer --no-keys --no-osd --avdict rtsp_transport:tcp $camera_crop $camera_orientation --win \"${window_positions[$x]}\" \"${camera_feeds[$i]}\" --live -n -1 --timeout "$omx_timeout" --dbus_name "org.mpris.MediaPlayer2.omxplayer.${camera_names[$i]}" >/dev/null &"
 		echo "Starting omxplayer for ${camera_names[$i]}"
