@@ -240,7 +240,7 @@ do
 		else
                     camera_orientation=""
 		fi
-		player="omxplayer --no-keys --no-osd --avdict rtsp_transport:tcp --orientation \"${camera_orientations[$i]}\" --win \"${window_positions[$x]}\" \"${camera_feeds[$i]}\" --live -n -1 --timeout "$omx_timeout" --dbus_name "org.mpris.MediaPlayer2.omxplayer.${camera_names[$i]}" >/dev/null &"
+		player="omxplayer --no-keys --no-osd --avdict rtsp_transport:tcp $camera_crop $camera_orientation --win \"${window_positions[$x]}\" \"${camera_feeds[$i]}\" --live -n -1 --timeout "$omx_timeout" --dbus_name "org.mpris.MediaPlayer2.omxplayer.${camera_names[$i]}" >/dev/null &"
 		echo "Starting omxplayer for ${camera_names[$i]}"
 		eval $player
 		sleep $startsleep
