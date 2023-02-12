@@ -38,6 +38,15 @@ camera_feeds=( \
 "rtsp://xxx.xxx.xxx.xxx:7447/yyyyyyyyy_0" \
 )
 
+camera_orientations=( 
+# Camera display orientation. Possible values are 0, 90, 180 and 270
+"0" \
+"0" \
+"0" \
+"0" \
+)
+
+
 # Are we rotating cameras through the window matrix? (default false if not set here)
 rotate="true"
 rotatedelay=8
