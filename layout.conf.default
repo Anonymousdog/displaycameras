@@ -8,9 +8,14 @@
 # on a full-HD monitor.  If this suites your needs, modify only the camera names to taste
 # and feed URLs to what your cameras or NVR provides.
 
+# If you are going to place a small window over a larger one (Picture in Picture) name
+# your window with "PIP" in the name, ie: "upper_left_PIP"
+# Otherwise the PIP window will flicker.
+
 # Window names
 
 # 2x2 screen with 3 off-screen windows
+
 windows=(upper_left upper_right lower_left lower_right off_screen off_screen2 off_screen3)
 # Make sure to account for each window above in the list below.
 

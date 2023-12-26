@@ -113,12 +113,18 @@ startupfailure=false
 feedfailure=false
 for i in ${!camera_names[*]}
 do
+	if [[ ${windows[$i]} =~ "PIP" ]]
+	then
+		pip="--layer=3"
+	else
+		pip=""
+	fi
 	startupretry=0
 	feedretry=0
 	x=$((i+$DISPLAY_SEQUENCE))
 	if [ "$x" -ge "${#camera_names[@]}" ]; then x=$((x-${#camera_names[@]}))
 	fi
-	player="omxplayer --no-keys --no-osd --avdict rtsp_transport:tcp --win \"${window_positions[$x]}\" \"${camera_feeds[$i]}\" --live -n -1 --timeout "$omx_timeout" --dbus_name "org.mpris.MediaPlayer2.omxplayer.${camera_names[$i]}" >/dev/null &"
+	player="omxplayer ${pip} --no-keys --no-osd --avdict rtsp_transport:tcp --win \"${window_positions[$x]}\" \"${camera_feeds[$i]}\" --live -n -1 --timeout "$omx_timeout" --dbus_name "org.mpris.MediaPlayer2.omxplayer.${camera_names[$i]}" >/dev/null &"
 	echo "Starting omxplayer for ${camera_names[$i]}"
 	eval $player
 	sleep $startsleep
@@ -214,13 +220,19 @@ for i in ${!camera_names[*]}
 do
 	if [ "`omxplayer_dbuscontrol ${camera_names[$i]} getplaystatus`" != "Playing" -o "`omxplayer_dbuscontrol ${camera_names[$i]} getposition`" = "0s" ]
 	then
+		if [[ ${windows[$i]} =~ "PIP" ]]
+		then
+			pip="--layer=3"
+		else
+			pip=""
+		fi
 		rm -f $PIDFILE
 		pkill rotatedisplays
 		omxplayer_dbuscontrol ${camera_names[$i]} quit
 		x=$((i+$DISPLAY_SEQUENCE))
 		if [ "$x" -ge "${#camera_names[@]}" ]; then x=$((x-${#camera_names[@]}))
 		fi
-		player="omxplayer --no-keys --no-osd --avdict rtsp_transport:tcp --win \"${window_positions[$x]}\" \"${camera_feeds[$i]}\" --live -n -1 --timeout "$omx_timeout" --dbus_name "org.mpris.MediaPlayer2.omxplayer.${camera_names[$i]}" >/dev/null &"
+		player="omxplayer ${pip} --no-keys --no-osd --avdict rtsp_transport:tcp --win \"${window_positions[$x]}\" \"${camera_feeds[$i]}\" --live -n -1 --timeout "$omx_timeout" --dbus_name "org.mpris.MediaPlayer2.omxplayer.${camera_names[$i]}" >/dev/null &"
 		echo "Starting omxplayer for ${camera_names[$i]}"
 		eval $player
 		sleep $startsleep
