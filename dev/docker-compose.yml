@@ -1,0 +1,28 @@
+services:
+  displaycameras-dev:
+    build:
+      context: ..
+      dockerfile: dev/Dockerfile
+      platforms:
+        - linux/arm64
+    platform: linux/arm64
+    container_name: displaycameras-dev
+    privileged: true
+    cgroup: host
+    # reach cameras at 192.168.68.x; noVNC at localhost:6080
+    network_mode: host
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - ../displaycameras:/usr/bin/displaycameras
+      - ../mpv_ipccontrol:/usr/bin/mpv_ipccontrol
+      - ../rotatedisplays:/usr/bin/rotatedisplays
+      - ../displaycameras.service:/etc/systemd/system/displaycameras.service
+      - ./config:/etc/displaycameras
+      - ./tests:/tests
+      - ./logs:/var/log/displaycameras
+    tmpfs:
+      - /run
+      - /run/lock
+      - /tmp
+    environment:
+      - DISPLAY=:0

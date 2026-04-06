@@ -1,0 +1,22 @@
+# Resolution-detected layout for 1920x1080 — 4 cameras in 2x2 grid
+# Loaded by displaydetect when xdpyinfo reports this resolution
+
+windows=(upper_left upper_right lower_left lower_right)
+
+window_positions=(
+"0 0 959 539" \
+"960 0 1919 539" \
+"0 540 959 1079" \
+"960 540 1919 1079" \
+)
+
+camera_names=(cam1 cam2 cam3 cam4)
+
+camera_feeds=( \
+"rtsp://localhost:8554/cam1" \
+"rtsp://localhost:8554/cam2" \
+"rtsp://localhost:8554/cam3" \
+"rtsp://localhost:8554/cam4" \
+)
+
+rotate="false"

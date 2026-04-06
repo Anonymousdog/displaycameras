@@ -1,0 +1,71 @@
+#!/bin/bash
+# mpv_ipccontrol — IPC wrapper for mpv, replaces omxplayer_dbuscontrol
+# Usage: mpv_ipccontrol <camera_name> <command>
+
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root"
+   exit 1
+fi
+
+PIDDIR=/var/run/displaycameras
+SOCKDIR=$PIDDIR
+LOGFILE=/var/log/displaycameras/ipc.log
+mkdir -p /var/log/displaycameras
+
+ipc_log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] IPC [$1] $2 → $3" >> "$LOGFILE"; }
+
+get_pid() {
+    local pidf="$PIDDIR/mpv-${1}.pid"
+    [ -f "$pidf" ] && cat "$pidf"
+}
+
+ipc_query() {
+    local sock="$SOCKDIR/mpv-${1}.sock"
+    [ -S "$sock" ] && echo "$2" | socat -t 1 - UNIX-CONNECT:"$sock" 2>/dev/null
+}
+
+case $2 in
+getplaystatus)
+    result=$(ipc_query "$1" '{"command":["get_property","core-idle"]}')
+    if echo "$result" | grep -q '"data":false'; then
+        ipc_log "$1" "getplaystatus" "Playing (raw: $result)"
+        echo "Playing"
+    else
+        ipc_log "$1" "getplaystatus" "NOT_PLAYING (raw: $result)"
+    fi
+    ;;
+
+getposition)
+    result=$(ipc_query "$1" '{"command":["get_property","playback-time"]}')
+    if echo "$result" | grep -q '"error":"success"'; then
+        pos=$(echo "$result" | grep -o '"data":[0-9.]*' | cut -d: -f2 | cut -d. -f1)
+        if [ -n "$pos" ] && [ "$pos" -gt 0 ] 2>/dev/null; then
+            ipc_log "$1" "getposition" "${pos}s (raw: $result)"
+            echo "${pos}s"
+        else
+            ipc_log "$1" "getposition" "0s (pos=$pos raw: $result)"
+            echo "0s"
+        fi
+    else
+        ipc_log "$1" "getposition" "0s (no IPC response: $result)"
+        echo "0s"
+    fi
+    ;;
+
+quit)
+    pid=$(get_pid "$1")
+    if [ -n "$pid" ]; then
+        ipc_log "$1" "quit" "killing pid $pid"
+        kill "$pid" 2>/dev/null
+        rm -f "$PIDDIR/mpv-${1}.pid"
+        rm -f "$SOCKDIR/mpv-${1}.sock"
+    else
+        ipc_log "$1" "quit" "no pid found"
+    fi
+    ;;
+
+*)
+    echo "usage: $0 camera_name getplaystatus|getposition|quit" >&2
+    exit 1
+    ;;
+esac

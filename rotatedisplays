@@ -1,4 +1,8 @@
 #!/bin/bash
+# Rotates camera feeds through window positions in a loop.
+# Upstream design: runs 11 cycles then forks a fresh copy to prevent
+# bash process bloat on long-running headless Pi systems. The PID changes
+# but pkill rotatedisplays (used in stop/repair) matches by name.
 for i in `seq 1 11`; do
 sleep $1
 seq_step="$2"
